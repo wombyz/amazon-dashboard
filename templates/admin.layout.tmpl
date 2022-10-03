@@ -1,0 +1,252 @@
+{{define "admin"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="wombyz">
+    <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+    <link rel="shortcut icon" href="/static/admin/img/favicon.png">
+
+    <title>JungleRoo - Amazon.com.au Analytics</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/admin/css/bootstrap-reset.css" rel="stylesheet">
+    <!--external css-->
+    <link href="/static/admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/static/admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/static/admin/css/owl.carousel.css" type="text/css">
+
+    <!--right slidebar-->
+    <link href="/static/admin/css/slidebars.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+
+    <link href="/static/admin/css/style.css" rel="stylesheet">
+    <link href="/static/admin/css/style-responsive.css" rel="stylesheet" />
+
+    <style>
+
+    </style>
+    {{block "css" . }}
+
+    {{end}}
+
+</head>
+
+<body class="light-sidebar-nav">
+
+<section id="container">
+    <!--header start-->
+    <header class="header white-bg">
+        <div class="sidebar-toggle-box">
+            <i class="fa fa-bars"></i>
+        </div>
+        <!--logo start-->
+        <a href="/admin/dashboard" class="logo">Jungle<span>Roo</span></a>
+        <!--logo end-->
+        <div class="nav notify-row" id="top_menu">
+            <!--  notification start -->
+            <ul class="nav top-menu">
+                <!-- settings start -->
+                <!-- notification dropdown start-->
+                <li id="header_notification_bar" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="fa fa-bell-o"></i>
+                        <span class="badge badge-warning">1</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <div class="notify-arrow notify-arrow-yellow"></div>
+                        <li>
+                            <p class="yellow">You have 1 new notification</p>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="label label-default"><i class="fa fa-bug"></i></span>
+                                Notification setup needed.
+                                <span class="small italic">34 mins</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- notification dropdown end -->
+            </ul>
+            <!--  notification end -->
+        </div>
+        <div class="top-nav ">
+            <!--search & user info start-->
+            <ul class="nav pull-right top-menu">
+                <!-- user login dropdown start-->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <img alt="" src="/static/admin/img/avatar1_small.jpg">
+                        <span class="username">Josh Brown</span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu extended logout dropdown-menu-right">
+                        <div class="log-arrow-up"></div>
+                        <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
+                        <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
+                        <li><a href="#"><i class="fa fa-bell-o"></i> Notification</a></li>
+                        <li><a href="/admin/logout"><i class="fa fa-key"></i> Log Out</a></li>
+                    </ul>
+                </li>
+                <!-- user login dropdown end -->
+            </ul>
+            <!--search & user info end-->
+        </div>
+    </header>
+    <!--header end-->
+    <!--sidebar start-->
+    <aside>
+        <div id="sidebar"  class="nav-collapse ">
+            <!-- sidebar menu start-->
+            <ul class="sidebar-menu" id="nav-accordion">
+                <li>
+                    <a class="active" href="/admin/dashboard">
+                        <i class="fa fa-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="sub-menu">
+                    <a href="javascript:" >
+                        <i class="fa fa-tag"></i>
+                        <span>Products</span>
+                    </a>
+                    <ul class="sub">
+                        <li><a  href="/admin/best-sellers">Best Sellers</a></li>
+                        <li><a  href="/admin/best-sellers">Categories</a></li>
+                        <li><a  href="/admin/watchlist">Watchlist</a></li>
+                        <li><a  href="/admin/search-products">Search</a></li>
+                    </ul>
+                </li>
+
+                <li class="sub-menu">
+                    <a href="javascript:" >
+                        <i class="fa fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <ul class="sub">
+                        <li><a  href="/admin/add-products">Add Products</a></li>
+                        <li><a  href="/admin/import-data">Import Data</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- sidebar menu end-->
+        </div>
+    </aside>
+    <!--sidebar end-->
+
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-md-12 grid-margin">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="font-weight-bold mb-0">{{block "page-title" .}} {{end}}</h4>
+                        </div>
+                        <div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                {{block "content" .}}
+
+                {{end}}
+            </div>
+        </section>
+    </section>
+    <!--main content end-->
+
+    <!--footer start-->
+    <section class="wrapper">
+        <div class="row">
+        <footer class="site-footer">
+            <div class="text-center mt-5">
+                2022 &copy; JungleRoo by Morningside Ventures Ltd.
+                <a href="#" class="go-top">
+                    <i class="fa fa-angle-up"></i>
+                </a>
+            </div>
+        </footer>
+        </div>
+    </section>
+    <!--footer end-->
+</section>
+
+<!-- js placed at the end of the document so the pages load faster -->
+<script src="/static/admin/js/jquery.js"></script>
+<script src="/static/admin/js/bootstrap.bundle.min.js"></script>
+<script class="include" type="text/javascript" src="/static/admin/js/jquery.dcjqaccordion.2.7.js"></script>
+<script src="/static/admin/js/jquery.scrollTo.min.js"></script>
+<script src="/static/admin/js/jquery.nicescroll.js" type="text/javascript"></script>
+<script src="/static/admin/js/jquery.sparkline.js" type="text/javascript"></script>
+<script src="/static/admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.js"></script>
+<script src="/static/admin/js/owl.carousel.js" ></script>
+<script src="/static/admin/js/jquery.customSelect.min.js" ></script>
+<script src="/static/admin/js/respond.min.js" ></script>
+
+<!--right slidebar-->
+<script src="/static/admin/js/slidebars.min.js"></script>
+
+<!--common script for all pages-->
+<script src="/static/admin/js/common-scripts.js"></script>
+
+<!--script for this page-->
+<script src="/static/admin/js/sparkline-chart.js"></script>
+<script src="/static/admin/js/easy-pie-chart.js"></script>
+<script src="/static/admin/js/count.js"></script>
+
+<script>
+
+    //owl carousel
+
+    $(document).ready(function() {
+        $("#owl-demo").owlCarousel({
+            navigation : true,
+            slideSpeed : 300,
+            paginationSpeed : 400,
+            singleItem : true,
+            autoPlay:true
+
+        });
+    });
+
+    //custom select box
+
+    $(function(){
+        $('select.styled').customSelect();
+    });
+
+    $(window).on("resize",function(){
+        var owl = $("#owl-demo").data("owlCarousel");
+        owl.reinit();
+    });
+
+</script>
+
+{{block "js" . }}
+
+{{end}}
+
+</body>
+</html>
+
+{{end}}
