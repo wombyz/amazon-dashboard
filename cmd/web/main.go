@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/wombyz/amazon-dashboard/internal/config"
+	"github.com/wombyz/amazon-dashboard/internal/driver"
 	"github.com/wombyz/amazon-dashboard/internal/handlers"
 	"github.com/wombyz/amazon-dashboard/internal/render"
 	"log"
@@ -22,10 +23,12 @@ var errorLog *log.Logger
 
 func main() {
 
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer db.SQL.Close()
 
 	fmt.Printf("Starting application on port %s", portNumber)
 
@@ -38,7 +41,7 @@ func main() {
 	log.Fatal(err)
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	//gob.Register(models.Reservation{})
 	gob.Register(map[string]int{})
 
@@ -60,18 +63,28 @@ func run() error {
 
 	app.Session = session
 
+	// connect to database
+	log.Println("Connecting to database...")
+
+	connectionString := "host=localhost port=5432 dbname=amazon-dashboard user=lottoley password="
+
+	db, err := driver.ConnectSQL(connectionString)
+	if err != nil {
+		log.Fatal("Cannot connect to database! Dying...")
+	}
+
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
 		log.Println(err)
 		log.Fatal("cannot create template cache")
-		return err
+		return nil, err
 	}
 
 	app.TemplateCache = tc
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.NewHandlers(repo)
 	render.NewRenderer(&app)
 
-	return nil
+	return db, nil
 }
