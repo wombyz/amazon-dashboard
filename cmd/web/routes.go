@@ -22,14 +22,18 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Route("/admin", func(mux chi.Router) {
 		//mux.Use(Auth)
 		mux.Get("/dashboard", handlers.Repo.Dashboard)
+
 		mux.Get("/search-products", handlers.Repo.SearchProducts)
-		mux.Get("/show-product/{id}", handlers.Repo.ShowProduct)
+		mux.Get("/search/{id}", handlers.Repo.SearchProductByID)
+		mux.Get("/product/{id}", handlers.Repo.ShowProduct)
 		mux.Get("/best-sellers", handlers.Repo.BestSellers)
 		mux.Get("/watchlist", handlers.Repo.Watchlist)
 		mux.Get("/add-products", handlers.Repo.AddProducts)
 		mux.Get("/import-data", handlers.Repo.ImportData)
 		mux.Get("/logout", handlers.Repo.Logout)
-		mux.Post("/upload-new-products", handlers.Repo.PostUploadNewProducts)
+
+		mux.Post("/post-add-products", handlers.Repo.PostAddProducts)
+		mux.Post("/post-upload-data", handlers.Repo.PostUploadData)
 	})
 
 	return mux

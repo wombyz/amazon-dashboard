@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// DB holds the databse connection pool
+// DB holds the database connection pool
 type DB struct {
 	SQL *sql.DB
 }
@@ -41,7 +41,7 @@ func ConnectSQL(dsn string) (*DB, error) {
 	return dbConn, nil
 }
 
-//testDB tries to ping the database
+// testDB tries to ping the database
 func testDB(d *sql.DB) error {
 	err := d.Ping()
 	if err != nil {

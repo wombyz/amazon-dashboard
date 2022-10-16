@@ -66,7 +66,7 @@ func run() (*driver.DB, error) {
 	// connect to database
 	log.Println("Connecting to database...")
 
-	connectionString := "host=localhost port=5432 dbname=amazon-dashboard user=lottoley password="
+	connectionString := "host=localhost port=5432 dbname=amazon-dashboard user=liamottley password="
 
 	db, err := driver.ConnectSQL(connectionString)
 	if err != nil {

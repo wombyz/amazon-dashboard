@@ -5,7 +5,25 @@
 {{end}}
 
 {{define "content"}}
-    <div class="col-md-12">
-        Search products content
+    <div class="col-md-12 mt-2">
+        Enter the ASIN number of the product you wish to view.
+
+        <form id="search_form" class="">
+            <input class="mt-2" id="" name="asin" placeholder="Search...">
+            <button type="submit">Search</button>
+        </form>
+        <br>
+        Enter the ASIN number of the product you wish to calculate weekly sales for.
+
+        <form id="weekly_sales_form" class="">
+            <input class="mt-2" id="" name="asin" placeholder="Enter ASIN...">
+            <button type="submit">Calculate</button>
+        </form>
     </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+
+    </script>
 {{end}}

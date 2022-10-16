@@ -5,7 +5,12 @@
 {{end}}
 
 {{define "content"}}
-    <div class="col-md-12">
-        Add Products content
+    <div class="col-md-12 mt-2">
+        Import products for tracking. Only .csv files are accepted.
+        <form enctype="multipart/form-data" class="mt-3" action="/admin/post-add-products" method="post">
+            <input type="file" name="uploadfile" accept="text/csv"/>
+            <input type="hidden" name="token" value="{{.}}"/>
+            <input type="submit" value="Upload" />
+        </form>
     </div>
 {{end}}
