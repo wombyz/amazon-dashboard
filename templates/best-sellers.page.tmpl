@@ -13,14 +13,14 @@
     <div class="col-md-12 mt-2">
         <p class="mb-1">Top selling items across all categories.</p>
 
-        {{$res := index .Data "sampleProducts"}}
+        {{$res := index .Data "products"}}
         <br>
         <table id="bs-table" class="table table-striped table-hover mt-4">
             <thead>
             <tr>
                 <th><i class="fa fa-question-circle"></i> ASIN</th>
                 <th><i class="fa fa-tag"></i> Product</th>
-                <th><i class="fa fa-dollar"></i> Est. Weekly Sales</th>
+                <th><i class="fa fa-dollar"></i> Weekly Sales</th>
                 <th></th>
             </tr>
             </thead>
@@ -32,8 +32,8 @@
                 <td>{{.Name}}</td>
                 <td>${{.WeeklySales}}</td>
                 <td>
-                    <button class="btn btn-success btn-xs"><i class="fa fa-external-link"></i></button>
-                    <button class="btn btn-primary btn-xs"><i class="fa fa-link"></i></button>
+                    <button class="btn btn-success btn-xs" onclick="window.open('/admin/product/{{.ASIN}}','_blank')"><i class="fa fa-external-link"></i></button>
+                    <button class="btn btn-primary btn-xs" onclick="window.open('{{.ListingURL}}','_blank')"><i class="fa fa-link"></i></button>
                 </td>
             </tr>
             {{end}}

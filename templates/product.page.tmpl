@@ -6,56 +6,75 @@
 {{end}}
 
 {{define "css"}}
-
+    <link href=https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css rel=stylesheet>
+    <link href=https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/css/dataTables.bootstrap4.min.css rel=stylesheet>
+    <style>
+        #main-content {
+            background-color: #F1F2F7;
+        }
+    </style>
 {{end}}
 
 {{define "content"}}
-    {{$res := index .Data "product"}}
+    {{$prod := index .Data "product"}}
+    {{$readings := index .Data "stockReadings"}}
     <div class="row mt-4">
         <div class="col-md-4">
-            <img src="{{$res.ImgURL}}" class="img-thumbnail d-block m-auto">
+            <img src="{{$prod.ImgURL}}" class="img-thumbnail d-block m-auto">
         </div>
         <div class="col-md-8">
-            <p><strong>ASIN:</strong> {{$res.ASIN}}</p>
-            <p><strong>Rating:</strong> {{$res.Rating}}</p>
-            <p><strong>Review Count:</strong> {{$res.ReviewCount}}</p>
-            <p><strong>Weekly Sales:</strong> ${{$res.WeeklySales}}</p>
-            <button class="btn btn-success btn-xs" onclick="window.open('{{$res.ListingURL}}','_blank')"><i class="fa fa-external-link"></i></button>
+            <p><strong>ASIN:</strong> {{$prod.ASIN}}</p>
+            <p><strong>Rating:</strong> {{$prod.Rating}}</p>
+            <p><strong>Review Count:</strong> {{$prod.ReviewCount}}</p>
+            <p><strong>Weekly Sales:</strong> ${{$prod.WeeklySales}}</p>
+            <button class="btn btn-success btn-xs" onclick="window.open('{{$prod.ListingURL}}','_blank')"><i class="fa fa-external-link"></i></button>
             <button class="btn btn-primary btn-xs"><i class="fa fa-link"></i></button>
         </div>
     </div>
-        <div class="col-md-12">
-            <table id="bs-table" class="table table-striped table-hover mt-4">
-                <thead>
-                <tr>
-                    <th><i class="fa fa-calendar"></i> Date</th>
-                    <th><i class="fa fa-truck"></i> Stock Available</th>
-                    <th><i class="fa fa-plus"></i> Change</th>
-                </tr>
-                </thead>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <table id="bs-table" class="table table-striped table-hover mt-4">
+                    <thead>
+                    <tr>
+                        <th><i class="fa fa-calendar"></i> Date</th>
+                        <th><i class="fa fa-bar-chart-o"></i> Quantity</th>
+                        <th><i class="fa fa-dollar"></i> Price</th>
+                        <th><i class="fa fa-truck"></i> Sold By</th>
+                        <th><i class="fa fa-user"></i> Other Sellers</th>
+                    </tr>
+                    </thead>
 
-                <tbody>
-                    <tr>
-                        <td>2022-09-25</td>
-                        <td>459 units</td>
-                        <td>-12</td>
-                    </tr>
-                    <tr>
-                        <td>2022-09-24</td>
-                        <td>467 units</td>
-                        <td>-23</td>
-                    </tr>
-                    <tr>
-                        <td>2022-09-23</td>
-                        <td>480 units</td>
-                        <td>-5</td>
-                    </tr>
-                </tbody>
-            </table>
+                    <tbody>
+                    {{range $readings}}
+                        <tr>
+                            <td>{{.RecordedAt.Format "2006-01-02 03:04 PM"}}</td>
+                            <td>{{.Quantity}}</td>
+                            <td>${{.Price}}</td>
+                            <td>{{.SoldBy}}</td>
+                            <td>{{.NumOtherSellers}}</td>
+                        </tr>
+                    {{end}}
+                    </tbody>
+                </table>
+            </div>
         </div>
-
 {{end}}
 
 {{define "js"}}
+
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/jquery.dataTables.min.js></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.20/js/dataTables.bootstrap4.min.js></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#bs-table').DataTable({
+                order: [[0, 'desc']],
+                paging: false,
+                searching: false,
+                info: false,
+            });
+        });
+    </script>
 
 {{end}}

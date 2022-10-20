@@ -12,5 +12,12 @@
             <input type="hidden" name="token" value="{{.}}"/>
             <input type="submit" value="Upload" />
         </form>
+
+        Delete stock data:
+        <form enctype="multipart/form-data" class="mt-3" action="/admin/post-delete-stock-data" method="post">
+            <input type="file" name="uploadfile" accept="text/csv"/>
+            <input type="hidden" name="token" value="{{.}}"/>
+            <input type="submit" value="Delete" />
+        </form>
     </div>
 {{end}}

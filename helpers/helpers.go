@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"github.com/wombyz/amazon-dashboard/models"
+	"math"
 	"time"
 )
 
@@ -39,4 +40,9 @@ func CalculateQuantityChangesSlice(q []int) []int {
 		prev = qty
 	}
 	return changeInStockSlice
+}
+
+func RoundFloat(val float64, precision uint) float64 {
+	ratio := math.Pow(10, float64(precision))
+	return math.Round(val*ratio) / ratio
 }

@@ -57,11 +57,16 @@ func (m *Repository) Dashboard(w http.ResponseWriter, r *http.Request) {
 // BestSellers is the best sellers page handler
 func (m *Repository) BestSellers(w http.ResponseWriter, r *http.Request) {
 
-	//data := make(map[string]interface{})
-	//data["sampleProducts"] = products
+	products, err := m.DB.GetAllProducts()
+	if err != nil {
+		log.Println(err)
+	}
+
+	data := make(map[string]interface{})
+	data["products"] = products
 
 	render.Template(w, r, "best-sellers.page.tmpl", &models.TemplateData{
-		//Data: data,
+		Data: data,
 	})
 }
 
@@ -76,8 +81,15 @@ func (m *Repository) ShowProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	stockReadings, err := m.DB.GetAllStockReadingsByASIN(asin)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	data := make(map[string]interface{})
 	data["product"] = product
+	data["stockReadings"] = stockReadings
 
 	render.Template(w, r, "product.page.tmpl", &models.TemplateData{
 		Data: data,
@@ -335,4 +347,196 @@ func (m *Repository) PostUploadData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.Template(w, r, "import-data.page.tmpl", &models.TemplateData{})
+}
+
+// CalculateAll calls the database weekly sales update
+func (m *Repository) CalculateAll(w http.ResponseWriter, r *http.Request) {
+	err := m.DB.CalculateWeeklySalesForAll()
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+// PostDeleteStockData is the delete stock data function handler
+func (m *Repository) PostDeleteStockData(w http.ResponseWriter, r *http.Request) {
+
+	var filePath string
+
+	// Save csv data
+	if r.Method == "GET" {
+		fmt.Println("Get request?")
+	} else {
+		err := r.ParseMultipartForm(32 << 20)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		file, handler, err := r.FormFile("uploadfile")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		defer file.Close()
+
+		fmt.Fprintf(w, "%v", handler.Header)
+		filePath = "./cache/" + handler.Filename
+		f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer f.Close()
+
+		_, err = io.Copy(f, file)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	f, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal("Unable to read input file "+filePath, err)
+	}
+	defer f.Close()
+
+	csvReader := csv.NewReader(f)
+	stockData, err := csvReader.ReadAll()
+	if err != nil {
+		log.Fatal("Unable to parse file as CSV for "+filePath, err)
+	}
+
+	var rids []string
+
+	for _, r := range stockData {
+		if r[0] == "RID" {
+			continue
+		}
+		rids = append(rids, r[0])
+	}
+
+	err = m.DB.DeleteStockReadings(rids)
+	if err != nil {
+		log.Println(err)
+	}
+
+	render.Template(w, r, "import-data.page.tmpl", &models.TemplateData{})
+}
+
+// CheckGrowth is the check growth function handler
+func (m *Repository) CheckGrowth(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "check-growth.page.tmpl", &models.TemplateData{})
+}
+
+// PostCheckGrowth is the check growth function handler
+func (m *Repository) PostCheckGrowth(w http.ResponseWriter, r *http.Request) {
+
+	var filePath string
+
+	// Save csv data
+	if r.Method == "GET" {
+		fmt.Println("Get request?")
+	} else {
+		err := r.ParseMultipartForm(32 << 20)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		file, handler, err := r.FormFile("uploadfile")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		defer file.Close()
+
+		fmt.Fprintf(w, "%v", handler.Header)
+		filePath = "./cache/" + handler.Filename
+		f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer f.Close()
+
+		_, err = io.Copy(f, file)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	// Read csv data
+	f, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal("Unable to read input file "+filePath, err)
+	}
+	defer f.Close()
+
+	csvReader := csv.NewReader(f)
+	products, err := csvReader.ReadAll()
+	if err != nil {
+		log.Fatal("Unable to parse file as CSV for "+filePath, err)
+	}
+
+	// Create a csv to write ASINs for deletion to
+	//
+	//file, err := os.Create("users.csv")
+	//defer file.Close()
+	//if err != nil {
+	//	log.Fatalln("failed to open file", err)
+	//}
+	//
+	//writer := csv.NewWriter(f)
+	//defer writer.Flush()
+
+	// Range over data and check each ASIN's weekly sales. If we have tracked for
+	// at least five days and sales are below X then append to a list to delete
+
+	var asinsToDelete []string
+
+	for _, p := range products {
+		if p[0] == "ASIN" {
+			continue
+		}
+
+		asin := p[0]
+
+		weeklySales, err := m.DB.CalculateWeeklySalesByASIN(asin)
+		if err != nil {
+			log.Println(err)
+		}
+
+		stockReadings, err := m.DB.GetAllStockReadingsByASIN(asin)
+		if err != nil {
+			log.Println(err)
+		}
+
+		startDate := time.Now()
+		fiveDayLimit := startDate.Add(-time.Duration(5) * (time.Duration(24) * time.Hour))
+
+		var inRangeCount int
+		for _, s := range stockReadings {
+			if s.RecordedAt.After(fiveDayLimit) {
+				inRangeCount += 1
+			}
+		}
+
+		if inRangeCount >= 4 {
+			if weeklySales < 200.0 {
+				asinsToDelete = append(asinsToDelete, asin)
+				//
+				//var asinRecord []string
+				//asinRecord = append(asinRecord, asin)
+				//if err := writer.Write(asinRecord); err != nil {
+				//	log.Fatalln("error writing record to file", err)
+				//}
+			}
+		}
+	}
+
+	for _, s := range asinsToDelete {
+		log.Println(s)
+	}
+
+	render.Template(w, r, "check-growth.page.tmpl", &models.TemplateData{})
 }
